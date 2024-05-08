@@ -1,36 +1,44 @@
 import java.time.Instant;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class Main {
     public static void main(String[] args) {
-        // Example input timestamps with different precisions
-        String millisTimestamp = "2024-05-08T12:30:45.123Z"; // Millisecond precision with UTC
-        String microsTimestamp = "2024-05-08T12:30:45.123456Z"; // Microsecond precision with UTC
-        String nanosTimestamp = "2024-05-08T12:30:45.123456789Z"; // Nanosecond precision with UTC
+        // Example input timestamps with different precisions and offsets
+        String[] timestamps = {
+            "2024-05-08T12:30:45.123Z", // Millisecond precision with UTC
+            "2024-05-08T12:30:45.123456Z", // Microsecond precision with UTC
+            "2024-05-08T12:30:45.123456789Z", // Nanosecond precision with UTC
+            "2024-05-08T12:30:45.123456+0800", // Microsecond precision with offset +0800
+            "2024-05-08T12:30:45.123456789+0800" // Nanosecond precision with offset +0800
+        };
         
         // Convert input timestamps to epoch timestamps
-        long millisEpochTimestamp = convertToEpochTimestamp(millisTimestamp);
-        long microsEpochTimestamp = convertToEpochTimestamp(microsTimestamp);
-        long nanosEpochTimestamp = convertToEpochTimestamp(nanosTimestamp);
-        
-        // Output epoch timestamps
-        System.out.println("Millisecond Epoch Timestamp: " + millisEpochTimestamp);
-        System.out.println("Microsecond Epoch Timestamp: " + microsEpochTimestamp);
-        System.out.println("Nanosecond Epoch Timestamp: " + nanosEpochTimestamp);
+        for (String timestamp : timestamps) {
+            long epochTimestamp = convertToEpochTimestamp(timestamp);
+            System.out.println("Input Timestamp: " + timestamp);
+            System.out.println("Epoch Timestamp: " + epochTimestamp);
+            System.out.println();
+        }
     }
 
     // Convert input timestamp to epoch timestamp
     private static long convertToEpochTimestamp(String inputTimestamp) {
         try {
+            // Define the custom date-time formatter to handle micro and nanoseconds precision
+            DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+            
             // Parse input timestamp
-            Instant instant = Instant.parse(inputTimestamp);
+            OffsetDateTime offsetDateTime = OffsetDateTime.parse(inputTimestamp, formatter);
+            
+            // Convert OffsetDateTime to Instant
+            Instant instant = offsetDateTime.toInstant();
             
             // Extract epoch timestamp
             return instant.getEpochSecond();
-        } catch (Exception e) {
+        } catch (DateTimeParseException e) {
             e.printStackTrace();
             return -1; // Error occurred
         }
