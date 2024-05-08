@@ -44,3 +44,7 @@ public class Main {
         }
     }
 }
+
+
+//   OffsetDateTime offsetDateTime = OffsetDateTime.parse(inputTimestamp, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        // OffsetDateTime utcOffsetDateTime = offsetDateTime.withOffsetSameInstant(ZoneOffset.UTC);
